@@ -80,6 +80,84 @@ func (s *Store) SaveProduct(product *model.Product) error {
 	return nil
 }
 
+// ExportProducts method
+func (s *Store) ExportProducts() ([]model.Product, error) {
+	query := `SELECT
+		p.id AS product_id,
+		p.name,
+		pv.id AS variant_id,
+		pv.sku,
+		pov.id AS option_value_id,
+		po.name AS option_name,
+		pov.value AS option_value
+	FROM products p
+	INNER JOIN product_variants pv ON pv.product_id = p.id
+	INNER JOIN product_variant_options pvo ON pvo.product_variant_id = pv.id
+	INNER JOIN product_option_values pov ON pov.id = pvo.product_option_value_id
+	INNER JOIN product_options po ON po.id = pov.product_option_id
+	WHERE pv.fg_delete = 0
+	ORDER BY p.id, pv.id ASC`
+
+	rows, err := s.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var products []model.Product
+	var variants []model.Variant
+	var options []model.Option
+
+	var prevProduct model.Product
+	var prevVariant model.Variant
+	for rows.Next() {
+		var productItem model.Product
+		var variantItem model.Variant
+		var optionItem model.Option
+
+		err = rows.Scan(
+			&productItem.ID,
+			&productItem.Name,
+			&variantItem.ID,
+			&variantItem.SKU,
+			&optionItem.ID,
+			&optionItem.Name,
+			&optionItem.Value,
+		)
+
+		// assign product id at variant object
+		variantItem.ProductID = productItem.ID
+
+		// populate variant
+		if prevVariant.ID != 0 && variantItem.ID != prevVariant.ID {
+			prevVariant.Options = options
+			variants = append(variants, prevVariant)
+			options = []model.Option{} // reset options
+		}
+
+		// populate option
+		options = append(options, optionItem)
+
+		// populate product
+		if prevProduct.ID != 0 && productItem.ID != prevProduct.ID {
+			prevProduct.Variants = variants
+			products = append(products, prevProduct)
+			variants = []model.Variant{} // reset variants
+		}
+
+		prevProduct = productItem
+		prevVariant = variantItem
+	}
+
+	// insert last iteration data
+	prevVariant.Options = options
+	variants = append(variants, prevVariant)
+	prevProduct.Variants = variants
+	products = append(products, prevProduct)
+
+	return products, nil
+}
+
 // GetOptionValueID method
 func (s *Store) GetOptionValueID(name, value string) (int, error) {
 	query := fmt.Sprintf(`SELECT pov.id 
