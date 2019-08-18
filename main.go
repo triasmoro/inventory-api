@@ -44,6 +44,9 @@ func main() {
 	r.HandleFunc("/stock_out", endpoint.PostStockOut(app)).Methods("POST").Headers("Content-Type", "application/json")
 	r.HandleFunc("/export/product", endpoint.GetExportProduct(app)).Methods("GET")
 
+	// report
+	r.HandleFunc("/actual_stock", endpoint.GetActualStock(app)).Methods("GET")
+
 	srv := &http.Server{
 		Handler:      handlers.LoggingHandler(os.Stdout, r),
 		Addr:         fmt.Sprintf("127.0.0.1:%d", port),

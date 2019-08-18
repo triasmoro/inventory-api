@@ -124,6 +124,9 @@ func (s *Store) ExportProducts() ([]model.Product, error) {
 			&optionItem.Name,
 			&optionItem.Value,
 		)
+		if err != nil {
+			return products, err
+		}
 
 		// assign product id at variant object
 		variantItem.ProductID = productItem.ID
