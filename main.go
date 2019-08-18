@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -18,7 +19,10 @@ import (
 )
 
 func main() {
-	port := 8080
+	// config port
+	var port int
+	flag.IntVar(&port, "p", 8080, "port")
+	flag.Parse()
 
 	app, err := app.NewApp()
 	if err != nil {
