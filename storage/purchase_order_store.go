@@ -1,6 +1,10 @@
 package storage
 
-import "github.com/triasmoro/inventory-api/model"
+import (
+	"database/sql"
+
+	"github.com/triasmoro/inventory-api/model"
+)
 
 // SavePurchaseOrder method
 func (s *Store) SavePurchaseOrder(order *model.PurchaseOrder) error {
@@ -60,4 +64,19 @@ func (s *Store) SavePurchaseOrder(order *model.PurchaseOrder) error {
 	tx.Commit()
 
 	return nil
+}
+
+// IsPurchaseOrderDetailExist method
+func (s *Store) IsPurchaseOrderDetailExist(id int) (bool, error) {
+	var exist int
+	query := "SELECT 1 FROM purchase_order_details WHERE id = ?"
+	if err := s.DB.QueryRow(query, id).Scan(&exist); err != nil {
+		if err != sql.ErrNoRows {
+			return false, err
+		}
+
+		return false, nil
+	}
+
+	return true, nil
 }
