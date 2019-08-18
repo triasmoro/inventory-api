@@ -4,11 +4,14 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/triasmoro/inventory-api/app"
+	"github.com/triasmoro/inventory-api/helper"
 	"github.com/triasmoro/inventory-api/model"
 )
 
+// PostStockIn endpoint
 func PostStockIn(app *app.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		body, err := ioutil.ReadAll(r.Body)
@@ -24,6 +27,12 @@ func PostStockIn(app *app.App) http.HandlerFunc {
 		}
 
 		store := app.Store
+
+		// check time validity
+		if _, err := time.Parse(helper.DateLayoutYMDHIS, stockIn.Time); err != nil {
+			WriteErrors(w, FieldErrors{{"time value", ErrFormatInvalid}})
+			return
+		}
 
 		// check existing of purchase order detail
 		exist, err := store.IsPurchaseOrderDetailExist(stockIn.PurchaseOrderDetailID)
