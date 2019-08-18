@@ -48,7 +48,7 @@ func PostStockOut(app *app.App) http.HandlerFunc {
 			// stock out based on sales order
 
 			// check existing of sales order and get order number at once
-			orderNumber, err := store.GetSONumberByOrderDetailID(stockOut.SalesOrderDetailID)
+			orderDetail, orderNumber, err := store.GetSalesOrderDetailAndSONumberByID(stockOut.SalesOrderDetailID)
 			if err != nil {
 				WriteErrors(w, FieldErrors{{"retrieve sales order detail", ErrFailed}})
 				return
@@ -58,15 +58,16 @@ func PostStockOut(app *app.App) http.HandlerFunc {
 			}
 
 			// generate notes
+			stockOut.ProductVariantID = orderDetail.ProductVariantID
 			stockOut.Notes = fmt.Sprintf("Pesanan %s", orderNumber)
 
 			// save
-			if err := store.SaveStockOutBasedSalesOrder(&stockOut); err != nil {
+			if err := store.SaveStockOutWithSales(&stockOut); err != nil {
 				WriteErrors(w, FieldErrors{{"save stock out", ErrFailed}})
 				return
 			}
 
-		} else if stockOut.ProductVariantID != 0 {
+		} else {
 			// stock out based without sales order such as lost / damaged / sampling
 
 			// check notes validity
@@ -89,13 +90,10 @@ func PostStockOut(app *app.App) http.HandlerFunc {
 			}
 
 			// save
-			if err := store.SaveStockOutBasedProduct(&stockOut); err != nil {
+			if err := store.SaveStockOutWithoutSales(&stockOut); err != nil {
 				WriteErrors(w, FieldErrors{{"save stock out", ErrFailed}})
 				return
 			}
-		} else {
-			WriteErrors(w, FieldErrors{{"sales order or product", ErrNotFound}})
-			return
 		}
 
 		WriteData(w, http.StatusOK, stockOut)

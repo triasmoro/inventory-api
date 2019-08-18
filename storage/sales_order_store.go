@@ -66,20 +66,29 @@ func (s *Store) SaveSalesOrder(order *model.SalesOrder) error {
 	return nil
 }
 
-// GetSONumberByOrderDetailID method
-func (s *Store) GetSONumberByOrderDetailID(id int) (string, error) {
+// GetSalesOrderDetailAndSONumberByID method
+func (s *Store) GetSalesOrderDetailAndSONumberByID(id int) (model.SalesOrderDetail, string, error) {
+	var orderDetail model.SalesOrderDetail
 	var orderNumber string
-	query := `SELECT so.so_number
+	query := `SELECT
+			sod.product_variant_id,
+			sod.qty,
+			sod.price,
+			so.so_number
 		FROM sales_orders so
 		INNER JOIN sales_order_details sod ON sod.sales_order_id = so.id
 		WHERE sod.id = ? AND so.fg_delete = 0`
-	if err := s.DB.QueryRow(query, id).Scan(&orderNumber); err != nil {
+	if err := s.DB.QueryRow(query, id).Scan(
+		&orderDetail.ProductVariantID,
+		&orderDetail.Qty,
+		&orderDetail.Price,
+		&orderNumber); err != nil {
 		if err != sql.ErrNoRows {
-			return "", err
+			return orderDetail, "", err
 		}
 
-		return "", nil
+		return orderDetail, "", nil
 	}
 
-	return orderNumber, nil
+	return orderDetail, orderNumber, nil
 }

@@ -30,17 +30,18 @@ func (s *Store) SaveStockIn(stock *model.StockIn) error {
 	return nil
 }
 
-// SaveStockOutBasedSalesOrder method
-func (s *Store) SaveStockOutBasedSalesOrder(stock *model.StockOut) error {
+// SaveStockOutWithSales method
+func (s *Store) SaveStockOutWithSales(stock *model.StockOut) error {
 	stmt, err := s.DB.Prepare(`INSERT INTO stock_out
-		(sales_order_detail_id, time, qty, notes) VALUES
-		(?, ?, ?, ?)`)
+		(sales_order_detail_id, product_variant_id, time, qty, notes) VALUES
+		(?, ?, ?, ?, ?)`)
 	if err != nil {
 		return err
 	}
 
 	res, err := stmt.Exec(
 		stock.SalesOrderDetailID,
+		stock.ProductVariantID,
 		stock.Time,
 		stock.Qty,
 		stock.Notes,
@@ -59,8 +60,8 @@ func (s *Store) SaveStockOutBasedSalesOrder(stock *model.StockOut) error {
 	return nil
 }
 
-// SaveStockOutBasedProduct method
-func (s *Store) SaveStockOutBasedProduct(stock *model.StockOut) error {
+// SaveStockOutWithoutSales method
+func (s *Store) SaveStockOutWithoutSales(stock *model.StockOut) error {
 	stmt, err := s.DB.Prepare(`INSERT INTO stock_out
 		(product_variant_id, time, qty, notes) VALUES
 		(?, ?, ?, ?)`)
