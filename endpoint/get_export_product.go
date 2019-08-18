@@ -7,10 +7,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/triasmoro/inventory-api/app"
 	"github.com/triasmoro/inventory-api/helper"
 	"github.com/triasmoro/inventory-api/model"
-
-	"github.com/triasmoro/inventory-api/app"
 )
 
 // GetExportProduct endpoint
