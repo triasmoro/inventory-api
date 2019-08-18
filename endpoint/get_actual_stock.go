@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/triasmoro/inventory-api/app"
+	"github.com/triasmoro/inventory-api/model"
 )
 
 // GetActualStock endpoint
@@ -18,21 +19,13 @@ func GetActualStock(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		type ActualStock struct {
-			ProductVariantID int    `json:"product_variant_id"`
-			SKU              string `json:"sku"`
-			Name             string `json:"product_name"`
-			StockIn          int    `json:"total_stock_in"`
-			StockOut         int    `json:"total_stock_out"`
-		}
-
 		// reformat
-		var result []ActualStock
+		var result []model.ActualStock
 		for _, data := range stocks {
 			variantID, _ := strconv.Atoi(data[0])
 			stockIn, _ := strconv.Atoi(data[4])
 			stockOut, _ := strconv.Atoi(data[5])
-			result = append(result, ActualStock{
+			result = append(result, model.ActualStock{
 				ProductVariantID: variantID,
 				SKU:              data[1],
 				Name:             fmt.Sprintf("%s (%s)", data[2], data[3]),

@@ -44,7 +44,7 @@ func GetExportProduct(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		filename := fmt.Sprintf("product-%s.csv", time.Now().Format(helper.DateLayoutPlainYMD_HIS))
+		filename := fmt.Sprintf("product-%s.csv", time.Now().Format(helper.DateLayoutPlainYMDHIS))
 
 		w.Header().Set("Content-Type", "text/csv")
 		w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))
