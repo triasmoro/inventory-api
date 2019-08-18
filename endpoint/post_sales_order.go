@@ -3,7 +3,6 @@ package endpoint
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
 
@@ -22,7 +21,6 @@ func PostSalesOrder(app *app.App) http.HandlerFunc {
 
 		var order model.SalesOrder
 		if err := json.Unmarshal(body, &order); err != nil {
-			log.Println(err)
 			WriteErrors(w, FieldErrors{{"unmarshal body", ErrFormatInvalid}})
 			return
 		}

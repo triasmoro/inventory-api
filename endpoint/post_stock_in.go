@@ -3,7 +3,6 @@ package endpoint
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/triasmoro/inventory-api/app"
@@ -20,7 +19,6 @@ func PostStockIn(app *app.App) http.HandlerFunc {
 
 		var stockIn model.StockIn
 		if err := json.Unmarshal(body, &stockIn); err != nil {
-			log.Println(err)
 			WriteErrors(w, FieldErrors{{"unmarshal body", ErrFormatInvalid}})
 			return
 		}

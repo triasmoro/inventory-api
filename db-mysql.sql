@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `stock_out`(
 	`sales_order_detail_id` INT(11)
 		COMMENT "null means not for sale such as lost or damaged or sampling",
 	`product_variant_id` INT(11)
-		COMMENT "filled if sales_order_detail_id null",
+		COMMENT "filled only if sales_order_detail_id null",
 	`time` DATETIME
 		COMMENT "filled if time when stock out is different with sales time",
 	`qty` INT(11) NOT NULL,
