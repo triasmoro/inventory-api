@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/triasmoro/inventory-api/model"
@@ -94,4 +95,19 @@ func (s *Store) GetOptionValueID(name, value string) (int, error) {
 	}
 
 	return int(id), nil
+}
+
+// IsProductVariantExist method
+func (s *Store) IsProductVariantExist(id int) (bool, error) {
+	var exist int
+	query := "SELECT 1 FROM product_variants WHERE id = ?"
+	if err := s.DB.QueryRow(query, id).Scan(&exist); err != nil {
+		if err != sql.ErrNoRows {
+			return false, err
+		}
+
+		return false, nil
+	}
+
+	return true, nil
 }

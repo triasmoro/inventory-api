@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `product_variant_options`(
 
 CREATE TABLE IF NOT EXISTS `purchase_orders`(
 	`id` INTEGER PRIMARY KEY,
-	`receipt_number` VARCHAR(50),
+	`po_number` VARCHAR(50),
 	`time` DATETIME NOT NULL,
 	`fg_delete` TINYINT(1) DEFAULT 0
 );
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `purchase_order_details`(
 	`purchase_order_id` INT(11) NOT NULL,
 	`product_variant_id` INT(11) NOT NULL,
 	`qty` INT(11) NOT NULL,
-	`purchase_price` INT(11) NOT NULL
+	`price` INT(11) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `stock_in`(
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `sales_order_details`(
 	`sales_order_id` INT(11) NOT NULL,
 	`product_variant_id` INT(11) NOT NULL,
 	`qty` INT(11) NOT NULL,
-	`selling_price` INT(11) NOT NULL,
+	`price` INT(11) NOT NULL,
 	FOREIGN KEY (`sales_order_id`)
 		REFERENCES `sales_orders`(`id`),
 	FOREIGN KEY (`product_variant_id`)

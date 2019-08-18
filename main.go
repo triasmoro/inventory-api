@@ -34,6 +34,7 @@ func main() {
 	// routing
 	r := mux.NewRouter()
 	r.HandleFunc("/product", endpoint.PostProduct(app)).Methods("POST").Headers("Content-Type", "application/json")
+	r.HandleFunc("/purchase_order", endpoint.PostPurchaseOrder(app)).Methods("POST").Headers("Content-Type", "application/json")
 
 	srv := &http.Server{
 		Handler:      handlers.LoggingHandler(os.Stdout, r),

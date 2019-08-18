@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `product_variant_options`(
 
 CREATE TABLE IF NOT EXISTS `purchase_orders`(
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`receipt_number` VARCHAR(50)
+	`po_number` VARCHAR(50)
 		COMMENT "null means receipt is lost",
 	`time` DATETIME NOT NULL,
 	`fg_delete` TINYINT(1) DEFAULT 0,
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `purchase_order_details`(
 	`purchase_order_id` INT(11) NOT NULL,
 	`product_variant_id` INT(11) NOT NULL,
 	`qty` INT(11) NOT NULL,
-	`purchase_price` INT(11) NOT NULL,
+	`price` INT(11) NOT NULL,
 	FOREIGN KEY `purchase_order_id`
 		REFERENCES `purchase_orders`(`id`),
 	FOREIGN KEY `product_variant_id`
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `sales_order_details`(
 	`sales_order_id` INT(11) NOT NULL,
 	`product_variant_id` INT(11) NOT NULL,
 	`qty` INT(11) NOT NULL,
-	`selling_price` INT(11) NOT NULL,
+	`price` INT(11) NOT NULL,
 	FOREIGN KEY (`sales_order_id`)
 		REFERENCES `sales_orders`(`id`),
 	FOREIGN KEY (`product_variant_id`)
