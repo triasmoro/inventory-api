@@ -37,6 +37,7 @@ func main() {
 	r.HandleFunc("/purchase_order", endpoint.PostPurchaseOrder(app)).Methods("POST").Headers("Content-Type", "application/json")
 	r.HandleFunc("/stock_in", endpoint.PostStockIn(app)).Methods("POST").Headers("Content-Type", "application/json")
 	r.HandleFunc("/sales_order", endpoint.PostSalesOrder(app)).Methods("POST").Headers("Content-Type", "application/json")
+	r.HandleFunc("/stock_out", endpoint.PostStockOut(app)).Methods("POST").Headers("Content-Type", "application/json")
 
 	srv := &http.Server{
 		Handler:      handlers.LoggingHandler(os.Stdout, r),

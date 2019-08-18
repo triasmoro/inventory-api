@@ -10,6 +10,7 @@ var (
 	ErrFormatInvalid = "FORMAT_INVALID"
 	ErrFailed        = "FAILED"
 	ErrNotFound      = "NOT_FOUND"
+	ErrValueInvalid  = "VALUE_INVALID"
 )
 
 type FieldError struct {

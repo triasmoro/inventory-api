@@ -1,7 +1,12 @@
 package storage
 
-import "github.com/triasmoro/inventory-api/model"
+import (
+	"database/sql"
 
+	"github.com/triasmoro/inventory-api/model"
+)
+
+// SaveSalesOrder method
 func (s *Store) SaveSalesOrder(order *model.SalesOrder) error {
 	tx, err := s.DB.Begin()
 	if err != nil {
@@ -59,4 +64,22 @@ func (s *Store) SaveSalesOrder(order *model.SalesOrder) error {
 	tx.Commit()
 
 	return nil
+}
+
+// GetSONumberByOrderDetailID method
+func (s *Store) GetSONumberByOrderDetailID(id int) (string, error) {
+	var orderNumber string
+	query := `SELECT so.so_number
+		FROM sales_orders so
+		INNER JOIN sales_order_details sod ON sod.sales_order_id = so.id
+		WHERE sod.id = ? AND so.fg_delete = 0`
+	if err := s.DB.QueryRow(query, id).Scan(&orderNumber); err != nil {
+		if err != sql.ErrNoRows {
+			return "", err
+		}
+
+		return "", nil
+	}
+
+	return orderNumber, nil
 }
