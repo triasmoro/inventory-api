@@ -69,7 +69,7 @@ func (s *Store) SavePurchaseOrder(order *model.PurchaseOrder) error {
 // IsPurchaseOrderDetailExist method
 func (s *Store) IsPurchaseOrderDetailExist(id int) (bool, error) {
 	var exist int
-	query := "SELECT 1 FROM purchase_order_details WHERE id = ?"
+	query := "SELECT 1 FROM purchase_order_details WHERE id = ? AND fg_delete = 0"
 	if err := s.DB.QueryRow(query, id).Scan(&exist); err != nil {
 		if err != sql.ErrNoRows {
 			return false, err

@@ -100,7 +100,7 @@ func (s *Store) GetOptionValueID(name, value string) (int, error) {
 // IsProductVariantExist method
 func (s *Store) IsProductVariantExist(id int) (bool, error) {
 	var exist int
-	query := "SELECT 1 FROM product_variants WHERE id = ?"
+	query := "SELECT 1 FROM product_variants WHERE id = ? AND fg_delete = 0"
 	if err := s.DB.QueryRow(query, id).Scan(&exist); err != nil {
 		if err != sql.ErrNoRows {
 			return false, err
