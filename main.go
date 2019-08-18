@@ -13,20 +13,24 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/triasmoro/inventory-api/app"
 )
 
 func main() {
 	port := 8080
 
-	db, err := sql.Open("sqlite3", "./data.db")
+	app, err := app.NewApp()
 	if err != nil {
-		log.Println(err)
+		log.Fatal(err)
 	}
-	defer db.Close()
 
 	// generate tables
-	generate(db)
+	if err := generate(app.DB); err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Database has been generated")
 
+	// routing
 	r := mux.NewRouter()
 
 	srv := &http.Server{
@@ -40,18 +44,18 @@ func main() {
 	log.Fatal(srv.ListenAndServe())
 }
 
-func generate(db *sql.DB) {
-	file, err := ioutil.ReadFile("db.sql")
+func generate(db *sql.DB) error {
+	file, err := ioutil.ReadFile("db-sqlite.sql")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	requests := strings.Split(string(file), ";")
 	for _, request := range requests {
 		if _, err := db.Exec(request); err != nil {
-			log.Fatal(err)
+			return err
 		}
 	}
 
-	log.Println("Database has been generated")
+	return nil
 }

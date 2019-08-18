@@ -1,22 +1,19 @@
 CREATE TABLE IF NOT EXISTS `products`(
-	`id` INT(11) NOT NULL,
-	`name` VARCHAR(255) NOT NULL,
-	PRIMARY KEY (`id`)
+	`id` INTEGER PRIMARY KEY,
+	`name` VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `product_options`(
-	`id` INT(11) NOT NULL,
-	`name` VARCHAR(100) NOT NULL,
-	PRIMARY KEY (`id`)
+	`id` INTEGER PRIMARY KEY,
+	`name` VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `product_option_values`(
-	`id` INT(11) NOT NULL,
+	`id` INTEGER PRIMARY KEY,
 	`product_option_id` INT(11) NOT NULL,
 	`value` VARCHAR(100) NOT NULL,
 	FOREIGN KEY (`product_option_id`)
-		REFERENCES `product_options`(`id`),
-	PRIMARY KEY (`id`)
+		REFERENCES `product_options`(`id`)
 );
 
 DELETE FROM `product_options`;
@@ -42,13 +39,10 @@ INSERT INTO `product_option_values` (`id`, `product_option_id`, `value`) VALUES
 (14, 2, "Red");
 
 CREATE TABLE IF NOT EXISTS `product_variants`(
-	`id` INT(11) NOT NULL,
+	`id` INTEGER PRIMARY KEY,
 	`product_id` INT(11) NOT NULL,
 	`sku` VARCHAR(50) NOT NULL,
-	`fg_delete` TINYINT(1) DEFAULT 0,
-	FOREIGN KEY (`product_id`)
-		REFERENCES `products`(`id`),
-	PRIMARY KEY (`id`)
+	`fg_delete` TINYINT(1) DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS `product_variant_options`(
@@ -61,43 +55,39 @@ CREATE TABLE IF NOT EXISTS `product_variant_options`(
 );
 
 CREATE TABLE IF NOT EXISTS `purchase_orders`(
-	`id` INT(11) NOT NULL,
+	`id` INTEGER PRIMARY KEY,
 	`receipt_number` VARCHAR(50),
 	`time` DATETIME NOT NULL,
-	`fg_delete` TINYINT(1) DEFAULT 0,
-	PRIMARY KEY (`id`)
+	`fg_delete` TINYINT(1) DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS `purchase_order_details`(
-	`id` INT(11) NOT NULL,
+	`id` INTEGER PRIMARY KEY,
 	`purchase_order_id` INT(11) NOT NULL,
 	`product_variant_id` INT(11) NOT NULL,
 	`qty` INT(11) NOT NULL,
-	`purchase_price` INT(11) NOT NULL,
-	PRIMARY KEY (`id`)
+	`purchase_price` INT(11) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `stock_in`(
-	`id` INT(11) NOT NULL,
+	`id` INTEGER PRIMARY KEY,
 	`purchase_order_detail_id` INT(11) NOT NULL,
 	`time` DATETIME NOT NULL,
 	`receive_qty` INT(11) NOT NULL,
 	`fg_delete` TINYINT(1) DEFAULT 0,
 	FOREIGN KEY (`purchase_order_detail_id`)
-		REFERENCES `purchase_order_details`(`id`),
-	PRIMARY KEY (`id`)
+		REFERENCES `purchase_order_details`(`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `sales_orders`(
-	`id` INT(11) NOT NULL,
+	`id` INTEGER PRIMARY KEY,
 	`so_number` VARCHAR(50) NOT NULL,
 	`time` DATETIME NOT NULL,
-	`fg_delete` TINYINT(1) DEFAULT 0,
-	PRIMARY KEY (`id`)
+	`fg_delete` TINYINT(1) DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS `sales_order_details`(
-	`id` INT(11) NOT NULL,
+	`id` INTEGER PRIMARY KEY,
 	`sales_order_id` INT(11) NOT NULL,
 	`product_variant_id` INT(11) NOT NULL,
 	`qty` INT(11) NOT NULL,
@@ -105,12 +95,11 @@ CREATE TABLE IF NOT EXISTS `sales_order_details`(
 	FOREIGN KEY (`sales_order_id`)
 		REFERENCES `sales_orders`(`id`),
 	FOREIGN KEY (`product_variant_id`)
-		REFERENCES `product_variants`(`id`),
-	PRIMARY KEY (`id`)
+		REFERENCES `product_variants`(`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `stock_out`(
-	`id` INT(11) NOT NULL,
+	`id` INTEGER PRIMARY KEY,
 	`sales_order_detail_id` INT(11),
 	`product_variant_id` INT(11),
 	`time` DATETIME,
@@ -118,6 +107,5 @@ CREATE TABLE IF NOT EXISTS `stock_out`(
 	`notes` TEXT,
 	`fg_delete` TINYINT(1) DEFAULT 0,
 	FOREIGN KEY (`product_variant_id`)
-		REFERENCES `product_variants`(`id`),
-	PRIMARY KEY (`id`)
+		REFERENCES `product_variants`(`id`)
 );
