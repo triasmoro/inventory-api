@@ -31,11 +31,9 @@ func GetExportProduct(app *app.App) http.HandlerFunc {
 		records := flat(products)
 
 		// write
-		for _, record := range records {
-			if err := writer.Write(record); err != nil {
-				WriteErrors(w, FieldErrors{{"writing csv record", ErrFailed}})
-				return
-			}
+		if err := writer.WriteAll(records); err != nil {
+			WriteErrors(w, FieldErrors{{"writing csv record", ErrFailed}})
+			return
 		}
 
 		// Write any buffered data to the underlying writer (standard output).
