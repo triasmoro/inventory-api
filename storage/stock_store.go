@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"fmt"
+
 	"github.com/triasmoro/inventory-api/model"
 )
 
@@ -87,6 +89,16 @@ func (s *Store) SaveStockOutWithoutSales(stock *model.StockOut) error {
 	}
 
 	stock.ID = int(stockID)
+
+	return nil
+}
+
+// DeleteStockIn method
+func (s *Store) DeleteStockIn(id int) error {
+	query := fmt.Sprintf(`UPDATE stock_in SET fg_delete = 1 WHERE id = %d`, id)
+	if _, err := s.DB.Exec(query); err != nil {
+		return err
+	}
 
 	return nil
 }
