@@ -80,6 +80,16 @@ func (s *Store) SaveProduct(product *model.Product) error {
 	return nil
 }
 
+// DeleteProductVariant method
+func (s *Store) DeleteProductVariant(id int) error {
+	query := fmt.Sprintf(`UPDATE product_variants SET fg_delete = 1 WHERE id = %d`, id)
+	if _, err := s.DB.Exec(query); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // ExportProducts method
 func (s *Store) ExportProducts() ([]model.Product, error) {
 	query := `SELECT

@@ -39,6 +39,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/product", endpoint.PostProduct(app)).Methods("POST").Headers("Content-Type", "application/json")
 	r.HandleFunc("/product/{id:[0-9]+}", endpoint.PatchProduct(app)).Methods("PATCH")
+	r.HandleFunc("/product_variant/{id:[0-9]+}", endpoint.DeleteProductVariant(app)).Methods("DELETE")
 	r.HandleFunc("/purchase_order", endpoint.PostPurchaseOrder(app)).Methods("POST").Headers("Content-Type", "application/json")
 	r.HandleFunc("/purchase_order/{id:[0-9]+}", endpoint.DeletePurchaseOrder(app)).Methods("DELETE")
 	r.HandleFunc("/stock_in", endpoint.PostStockIn(app)).Methods("POST").Headers("Content-Type", "application/json")
