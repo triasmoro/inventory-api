@@ -243,3 +243,23 @@ func (s *Store) IsStockInExistByPurchaseOrderID(id int) (bool, error) {
 
 	return true, nil
 }
+
+// IsStockOutExistBySalesOrderID method
+func (s *Store) IsStockOutExistBySalesOrderID(id int) (bool, error) {
+	var exist int
+	query := `SELECT 1 FROM sales_orders so
+		INNER JOIN sales_order_details sod ON sod.sales_order_id = so.id
+		INNER JOIN stock_out st_out ON st_out.sales_order_detail_id = sod.id
+		WHERE so.fg_delete = 0
+		AND st_out.fg_delete = 0
+		AND so.id = ?`
+	if err := s.DB.QueryRow(query, id).Scan(&exist); err != nil {
+		if err != sql.ErrNoRows {
+			return false, err
+		}
+
+		return false, nil
+	}
+
+	return true, nil
+}

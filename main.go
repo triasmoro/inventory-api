@@ -43,6 +43,7 @@ func main() {
 	r.HandleFunc("/stock_in", endpoint.PostStockIn(app)).Methods("POST").Headers("Content-Type", "application/json")
 	r.HandleFunc("/stock_in/{id:[0-9]+}", endpoint.DeleteStockIn(app)).Methods("DELETE")
 	r.HandleFunc("/sales_order", endpoint.PostSalesOrder(app)).Methods("POST").Headers("Content-Type", "application/json")
+	r.HandleFunc("/sales_order/{id:[0-9]+}", endpoint.DeleteSalesOrder(app)).Methods("DELETE")
 	r.HandleFunc("/stock_out", endpoint.PostStockOut(app)).Methods("POST").Headers("Content-Type", "application/json")
 	r.HandleFunc("/stock_out/{id:[0-9]+}", endpoint.DeleteStockOut(app)).Methods("DELETE")
 	r.HandleFunc("/export/product", endpoint.GetExportProduct(app)).Methods("GET")

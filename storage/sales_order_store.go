@@ -67,6 +67,16 @@ func (s *Store) SaveSalesOrder(order *model.SalesOrder) error {
 	return nil
 }
 
+// DeleteSalesOrder method
+func (s *Store) DeleteSalesOrder(id int) error {
+	query := fmt.Sprintf(`UPDATE sales_orders SET fg_delete = 1 WHERE id = %d`, id)
+	if _, err := s.DB.Exec(query); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // GetSalesOrderDetailAndSONumberByID method
 func (s *Store) GetSalesOrderDetailAndSONumberByID(id int) (model.SalesOrderDetail, string, error) {
 	var orderDetail model.SalesOrderDetail
