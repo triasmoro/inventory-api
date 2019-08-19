@@ -2,6 +2,7 @@ package storage
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/triasmoro/inventory-api/model"
 )
@@ -62,6 +63,16 @@ func (s *Store) SavePurchaseOrder(order *model.PurchaseOrder) error {
 	}
 
 	tx.Commit()
+
+	return nil
+}
+
+// DeletePurchaseOrder method
+func (s *Store) DeletePurchaseOrder(id int) error {
+	query := fmt.Sprintf(`UPDATE purchase_orders SET fg_delete = 1 WHERE id = %d`, id)
+	if _, err := s.DB.Exec(query); err != nil {
+		return err
+	}
 
 	return nil
 }

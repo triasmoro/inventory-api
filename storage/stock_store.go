@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/triasmoro/inventory-api/model"
@@ -221,4 +222,24 @@ func (s *Store) GetGoodsAssets(untilDate string) ([][]string, error) {
 	}
 
 	return result, nil
+}
+
+// IsStockInExistByPurchaseOrderID method
+func (s *Store) IsStockInExistByPurchaseOrderID(id int) (bool, error) {
+	var exist int
+	query := `SELECT 1 FROM purchase_orders po
+		INNER JOIN purchase_order_details pod ON pod.purchase_order_id = po.id
+		INNER JOIN stock_in st_in ON st_in.purchase_order_detail_id = pod.id
+		WHERE po.fg_delete = 0
+		AND st_in.fg_delete = 0
+		AND po.id = ?`
+	if err := s.DB.QueryRow(query, id).Scan(&exist); err != nil {
+		if err != sql.ErrNoRows {
+			return false, err
+		}
+
+		return false, nil
+	}
+
+	return true, nil
 }
