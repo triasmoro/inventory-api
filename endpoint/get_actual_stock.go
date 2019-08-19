@@ -22,13 +22,15 @@ func GetActualStock(app *app.App) http.HandlerFunc {
 		// reformat
 		var result []model.ActualStock
 		for _, data := range stocks {
-			variantID, _ := strconv.Atoi(data[0])
-			stockIn, _ := strconv.Atoi(data[4])
-			stockOut, _ := strconv.Atoi(data[5])
+			productID, _ := strconv.Atoi(data[0])
+			variantID, _ := strconv.Atoi(data[1])
+			stockIn, _ := strconv.Atoi(data[5])
+			stockOut, _ := strconv.Atoi(data[6])
 			result = append(result, model.ActualStock{
+				ProductID:        productID,
 				ProductVariantID: variantID,
-				SKU:              data[1],
-				Name:             fmt.Sprintf("%s (%s)", data[2], data[3]),
+				SKU:              data[2],
+				Name:             fmt.Sprintf("%s (%s)", data[3], data[4]),
 				StockIn:          stockIn,
 				StockOut:         stockOut,
 			})

@@ -11,11 +11,11 @@ import (
 	"github.com/triasmoro/inventory-api/model"
 )
 
-// GetAssets endpoint
-func GetAssets(app *app.App) http.HandlerFunc {
+// GetAssetsReport endpoint
+func GetAssetsReport(app *app.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// get date
-		untilDate := r.URL.Query().Get("untildate")
+		untilDate := r.URL.Query().Get("until_date")
 		if untilDate == "" {
 			untilDate = time.Now().Format(helper.DateLayoutYMD)
 		} else {

@@ -117,6 +117,7 @@ func (s *Store) DeleteStockOut(id int) error {
 // GetActualStocks method
 func (s *Store) GetActualStocks() ([][]string, error) {
 	query := `SELECT
+		p.id AS product_id,
 		pv.id AS variant_id,
 		pv.sku,
 		p.name,
@@ -140,9 +141,10 @@ func (s *Store) GetActualStocks() ([][]string, error) {
 	defer rows.Close()
 
 	var result [][]string
-	var variantID, sku, name, options, totalIn, totalOut string
+	var productID, variantID, sku, name, options, totalIn, totalOut string
 	for rows.Next() {
 		err = rows.Scan(
+			&productID,
 			&variantID,
 			&sku,
 			&name,
@@ -155,6 +157,7 @@ func (s *Store) GetActualStocks() ([][]string, error) {
 		}
 
 		result = append(result, []string{
+			productID,
 			variantID,
 			sku,
 			name,

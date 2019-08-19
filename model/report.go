@@ -1,6 +1,7 @@
 package model
 
 type ActualStock struct {
+	ProductID        int    `json:"product_id"`
 	ProductVariantID int    `json:"product_variant_id"`
 	SKU              string `json:"sku"`
 	Name             string `json:"product_name"`
