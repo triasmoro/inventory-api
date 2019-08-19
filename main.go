@@ -48,7 +48,10 @@ func main() {
 	r.HandleFunc("/sales_order/{id:[0-9]+}", endpoint.DeleteSalesOrder(app)).Methods("DELETE")
 	r.HandleFunc("/stock_out", endpoint.PostStockOut(app)).Methods("POST").Headers("Content-Type", "application/json")
 	r.HandleFunc("/stock_out/{id:[0-9]+}", endpoint.DeleteStockOut(app)).Methods("DELETE")
+
+	// csv export
 	r.HandleFunc("/export/product", endpoint.GetExportProduct(app)).Methods("GET")
+	r.HandleFunc("/export/stock_in", endpoint.GetExportStockIn(app)).Methods("GET")
 
 	// report
 	r.HandleFunc("/actual_stock", endpoint.GetActualStock(app)).Methods("GET")

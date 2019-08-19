@@ -171,7 +171,7 @@ func (s *Store) GetActualStocks() ([][]string, error) {
 }
 
 // GetGoodsAssets method
-func (s *Store) GetGoodsAssets(untilDate string) ([][]string, error) {
+func (s *Store) GetGoodsAssets(until string) ([][]string, error) {
 	query := `SELECT
 		pv.id AS variant_id,
 		pv.sku,
@@ -193,7 +193,7 @@ func (s *Store) GetGoodsAssets(untilDate string) ([][]string, error) {
 	WHERE pv.fg_delete = 0
 	GROUP BY p.id, pv.id, pvo.product_variant_id`
 
-	rows, err := s.DB.Query(query, untilDate, untilDate)
+	rows, err := s.DB.Query(query, until, until)
 	if err != nil {
 		return nil, err
 	}
@@ -221,6 +221,97 @@ func (s *Store) GetGoodsAssets(untilDate string) ([][]string, error) {
 			options,
 			averagePrice,
 			stock,
+		})
+	}
+
+	return result, nil
+}
+
+// GetStockInReport method
+func (s *Store) GetStockInReport(start, end string) ([][]string, error) {
+	var where string
+	if start != "" && end != "" {
+		where = fmt.Sprintf(`AND DATE(st_in.time) BETWEEN "%s" AND "%s"`, start, end)
+	}
+
+	query := fmt.Sprintf(`SELECT
+		po.id AS po_id,
+		pod.id AS po_detail_id,
+		po.time,
+		pv.sku,
+		p.name,
+		(SELECT GROUP_CONCAT(value)
+			FROM product_option_values pov
+			INNER JOIN product_variant_options pvo ON pvo.product_option_value_id = pov.id
+			WHERE pvo.product_variant_id = pv.id) AS options,
+		pod.qty,
+		pod.price AS purchase_price,
+		pod.qty * pod.price AS total,
+		po.po_number,
+		GROUP_CONCAT(st_in.receive_qty) AS receive_qtys,
+		GROUP_CONCAT(DATE(st_in.time)) AS receive_times
+	FROM  purchase_order_details pod
+	INNER JOIN purchase_orders po ON po.id = pod.purchase_order_id AND po.fg_delete = 0
+	INNER JOIN product_variants pv ON pv.id = pod.product_variant_id
+	INNER JOIN products p ON p.id = pv.product_id
+	LEFT JOIN stock_in st_in ON st_in.purchase_order_detail_id = pod.id
+	WHERE po.fg_delete = 0
+	AND st_in.fg_delete = 0
+	%s
+	GROUP BY po.id, pod.id`, where)
+
+	rows, err := s.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var result [][]string
+	var poID,
+		poDetailID,
+		poTime,
+		sku,
+		name,
+		options,
+		purchaseQty,
+		purchasePrice,
+		totalPurchase,
+		poNumber,
+		receiveQtys,
+		receiveTimes string
+
+	for rows.Next() {
+		err = rows.Scan(
+			&poID,
+			&poDetailID,
+			&poTime,
+			&sku,
+			&name,
+			&options,
+			&purchaseQty,
+			&purchasePrice,
+			&totalPurchase,
+			&poNumber,
+			&receiveQtys,
+			&receiveTimes,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		result = append(result, []string{
+			poID,
+			poDetailID,
+			poTime,
+			sku,
+			name,
+			options,
+			purchaseQty,
+			purchasePrice,
+			totalPurchase,
+			poNumber,
+			receiveQtys,
+			receiveTimes,
 		})
 	}
 
