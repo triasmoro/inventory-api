@@ -47,6 +47,7 @@ func main() {
 	// report
 	r.HandleFunc("/actual_stock", endpoint.GetActualStock(app)).Methods("GET")
 	r.HandleFunc("/assets", endpoint.GetAssets(app)).Methods("GET")
+	r.HandleFunc("/sales_report", endpoint.GetSalesReport(app)).Methods("GET")
 
 	srv := &http.Server{
 		Handler:      handlers.LoggingHandler(os.Stdout, r),

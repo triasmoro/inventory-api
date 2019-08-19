@@ -37,10 +37,12 @@ func GetAssets(app *app.App) http.HandlerFunc {
 		var details []model.AssetDetail
 		var totalQty, totalPrice int
 		for _, data := range assets {
+
 			variantID, _ := strconv.Atoi(data[0])
 			qty, _ := strconv.Atoi(data[4])
 			averagePrice, _ := strconv.Atoi(data[5])
 			total := qty * averagePrice
+
 			details = append(details, model.AssetDetail{
 				ProductVariantID: variantID,
 				SKU:              data[1],

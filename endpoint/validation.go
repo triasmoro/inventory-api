@@ -11,6 +11,7 @@ var (
 	ErrFailed        = "FAILED"
 	ErrNotFound      = "NOT_FOUND"
 	ErrValueInvalid  = "VALUE_INVALID"
+	ErrRequired      = "REQUIRED"
 )
 
 type FieldError struct {
