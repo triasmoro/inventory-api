@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/triasmoro/inventory-api/app"
@@ -54,9 +55,9 @@ func GetExportProduct(app *app.App) http.HandlerFunc {
 	}
 }
 
-func flat(products []model.Product) [][]string {
+func flat(products []model.ExportedProduct) [][]string {
 	records := [][]string{
-		{"product name", "sku", "option name", "option value"}, // header field
+		{"product name", "sku", "option name", "option value", "stock in", "stock out"}, // header field
 	}
 	var prevProductID, prevVariantID int
 
@@ -64,12 +65,14 @@ func flat(products []model.Product) [][]string {
 		for _, variant := range product.Variants {
 			for _, option := range variant.Options {
 
-				var productName, sku string
+				var productName, sku, stockIn, stockOut string
 				if product.ID != prevProductID {
 					productName = product.Name
 				}
 				if variant.ID != prevVariantID {
 					sku = variant.SKU
+					stockIn = strconv.Itoa(variant.StockIn)
+					stockOut = strconv.Itoa(variant.StockOut)
 				}
 
 				record := []string{
@@ -77,6 +80,8 @@ func flat(products []model.Product) [][]string {
 					sku,
 					option.Name,
 					option.Value,
+					stockIn,
+					stockOut,
 				}
 				records = append(records, record)
 

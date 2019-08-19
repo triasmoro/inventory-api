@@ -21,3 +21,20 @@ type Option struct {
 	Name  string `json:"name"`
 	Value string `json:"value"`
 }
+
+// ExportedProduct object
+type ExportedProduct struct {
+	ID       int               `json:"id,omitempty"`
+	Name     string            `json:"name"`
+	Variants []ExportedVariant `json:"variants"`
+}
+
+// ExportedVariant of product
+type ExportedVariant struct {
+	ID        int      `json:"id,omitempty"`
+	ProductID int      `json:"product_id,omitempty"`
+	SKU       string   `json:"sku,omitempty"`
+	Options   []Option `json:"options"`
+	StockIn   int      `json:"stock_in"`  // accumulated
+	StockOut  int      `json:"stock_out"` // accumulated
+}

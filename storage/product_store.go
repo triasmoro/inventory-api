@@ -91,7 +91,7 @@ func (s *Store) DeleteProductVariant(id int) error {
 }
 
 // ExportProducts method
-func (s *Store) ExportProducts() ([]model.Product, error) {
+func (s *Store) ExportProducts() ([]model.ExportedProduct, error) {
 	query := `SELECT
 		p.id AS product_id,
 		p.name,
@@ -99,13 +99,19 @@ func (s *Store) ExportProducts() ([]model.Product, error) {
 		pv.sku,
 		pov.id AS option_value_id,
 		po.name AS option_name,
-		pov.value AS option_value
+		pov.value AS option_value,
+		COALESCE(SUM(st_in.receive_qty), 0) AS total_in,
+		COALESCE(SUM(st_out.qty), 0) AS total_out
 	FROM products p
 	INNER JOIN product_variants pv ON pv.product_id = p.id
 	INNER JOIN product_variant_options pvo ON pvo.product_variant_id = pv.id
 	INNER JOIN product_option_values pov ON pov.id = pvo.product_option_value_id
 	INNER JOIN product_options po ON po.id = pov.product_option_id
+	LEFT JOIN purchase_order_details pod ON pod.product_variant_id = pv.id
+	LEFT JOIN stock_in st_in ON st_in.purchase_order_detail_id = pod.id AND st_in.fg_delete = 0
+	LEFT JOIN stock_out st_out ON st_out.product_variant_id = pv.id AND st_out.fg_delete = 0
 	WHERE pv.fg_delete = 0
+	GROUP BY pv.id, po.id
 	ORDER BY p.id, pv.id ASC`
 
 	rows, err := s.DB.Query(query)
@@ -114,15 +120,15 @@ func (s *Store) ExportProducts() ([]model.Product, error) {
 	}
 	defer rows.Close()
 
-	var products []model.Product
-	var variants []model.Variant
+	var products []model.ExportedProduct
+	var variants []model.ExportedVariant
 	var options []model.Option
 
-	var prevProduct model.Product
-	var prevVariant model.Variant
+	var prevProduct model.ExportedProduct
+	var prevVariant model.ExportedVariant
 	for rows.Next() {
-		var productItem model.Product
-		var variantItem model.Variant
+		var productItem model.ExportedProduct
+		var variantItem model.ExportedVariant
 		var optionItem model.Option
 
 		err = rows.Scan(
@@ -133,6 +139,8 @@ func (s *Store) ExportProducts() ([]model.Product, error) {
 			&optionItem.ID,
 			&optionItem.Name,
 			&optionItem.Value,
+			&variantItem.StockIn,
+			&variantItem.StockOut,
 		)
 		if err != nil {
 			return products, err
@@ -155,7 +163,7 @@ func (s *Store) ExportProducts() ([]model.Product, error) {
 		if prevProduct.ID != 0 && productItem.ID != prevProduct.ID {
 			prevProduct.Variants = variants
 			products = append(products, prevProduct)
-			variants = []model.Variant{} // reset variants
+			variants = []model.ExportedVariant{} // reset variants
 		}
 
 		prevProduct = productItem
