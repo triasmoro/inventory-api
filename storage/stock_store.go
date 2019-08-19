@@ -103,6 +103,16 @@ func (s *Store) DeleteStockIn(id int) error {
 	return nil
 }
 
+// DeleteStockOut method
+func (s *Store) DeleteStockOut(id int) error {
+	query := fmt.Sprintf(`UPDATE stock_out SET fg_delete = 1 WHERE id = %d`, id)
+	if _, err := s.DB.Exec(query); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // GetActualStocks method
 func (s *Store) GetActualStocks() ([][]string, error) {
 	query := `SELECT
