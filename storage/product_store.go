@@ -161,6 +161,18 @@ func (s *Store) ExportProducts() ([]model.Product, error) {
 	return products, nil
 }
 
+// GetProductByID method
+func (s *Store) GetProductByID(id int) (model.Product, error) {
+	query := fmt.Sprintf(`SELECT id, name FROM products WHERE id = %d`, id)
+
+	var p model.Product
+	if err := s.DB.QueryRow(query).Scan(&p.ID, &p.Name); err != nil {
+		return p, err
+	}
+
+	return p, nil
+}
+
 // GetOptionValueID method
 func (s *Store) GetOptionValueID(name, value string) (int, error) {
 	query := fmt.Sprintf(`SELECT pov.id 
@@ -191,4 +203,14 @@ func (s *Store) IsProductVariantExist(id int) (bool, error) {
 	}
 
 	return true, nil
+}
+
+// UpdateProduct method
+func (s *Store) UpdateProduct(p model.Product) error {
+	query := fmt.Sprintf(`UPDATE products SET name = "%s" WHERE id = %d`, p.Name, p.ID)
+	if _, err := s.DB.Exec(query); err != nil {
+		return err
+	}
+
+	return nil
 }
