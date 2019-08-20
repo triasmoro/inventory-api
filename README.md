@@ -3,6 +3,31 @@
 API to manage your simple inventory
 
 .
+## Features
+
+Get my postman collection from [here](https://www.getpostman.com/collections/fde01ca3ea1ba772b6cf)
+
+| Method   | Endpoints | Header | Notes |
+|:-------- |:--------- | ------ | ----- |
+| `POST`   | */product*  | `Content-Type: application/json` | |
+| `PATCH`  | */product/:id* | `Content-Type: application/json` | Only update name | 
+| `DELETE` | */product_variant/:id* | - | Delete per variant using product variant id |
+| `POST`   | */purchase_order* | `Content-Type: application/json` | |
+| `DELETE` | */purchase_order/:id* | - | |
+| `POST`   | */stock_in* | `Content-Type: application/json` | |
+| `DELETE` | */stock_in/:id* | - | |
+| `POST`   | */sales_order* | `Content-Type: application/json` | |
+| `DELETE` | */sales_order/:id* | - | |
+| `POST`   | */stock_out* | `Content-Type: application/json` | |
+| `DELETE` | */stock_out/:id* | - | |
+| `GET`    | */actual_stock* | - | |
+| `GET`    | */assets_report* | - | Use `until_date` parameter which used as before date on `stock-in` & `stock-out`  |
+| `GET`    | */sales_report* | - | Use `start_date` and `end_date` parameters used on sales order time |
+| `GET`    | */export/product* | - | CSV export for product |
+| `GET`    | */export/stock_in* | - | CSV export for stock-in |
+
+
+.
 ## Database
 
 Save as `data.db` file which generated automatically when running app at first
