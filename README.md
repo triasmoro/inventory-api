@@ -2,10 +2,12 @@
 
 API to manage your simple inventory
 
+.
 ## Database
 
 Save as `data.db` file which generated automatically when running app at first
 
+.
 ## Run
 
 ### Default port 8080
@@ -22,6 +24,14 @@ Change `8787` with your choice.
 $ go run main.go -p=8787
 ```
 
+.
+## Development
+
+### Add endpoint
+
+Go to `route/public_routes.go` to add another endpoint
+
+.
 ## Build
 
 If you use Windows OS, please use bash console to build binary such as Git Bash.
