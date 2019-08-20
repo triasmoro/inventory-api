@@ -105,7 +105,7 @@ func (s *Store) GetSalesOrderDetailAndSONumberByID(id int) (model.SalesOrderDeta
 }
 
 // GetSalesReport method
-func (s *Store) GetSalesReport(startDate, endDate string) ([][]string, error) {
+func (s *Store) GetSalesReport(start, end string) ([][]string, error) {
 	query := fmt.Sprintf(`SELECT
 		so.id AS sales_order_id,
 		so.so_number,
@@ -132,7 +132,7 @@ func (s *Store) GetSalesReport(startDate, endDate string) ([][]string, error) {
 	AND pv.fg_delete = 0
 	AND DATE(so.time) BETWEEN "%s" AND "%s"
 	GROUP BY pv.id
-	ORDER BY so.id, sod.id, pv.id ASC`, startDate, endDate)
+	ORDER BY so.id, sod.id, pv.id ASC`, start, end)
 
 	rows, err := s.DB.Query(query)
 	if err != nil {

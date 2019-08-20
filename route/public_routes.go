@@ -36,7 +36,7 @@ func publicRoutes(app *app.App) []*HandledRoute {
 			handle(handler.PostStockIn(app)),
 
 		delete("/stock_in/{id:[0-9]+}").
-			securedWith(contentTypeJSON).
+			securedWith(unsecured()).
 			handle(handler.DeleteStockIn(app)),
 
 		post("/sales_order").
