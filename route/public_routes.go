@@ -2,7 +2,7 @@ package route
 
 import (
 	"github.com/triasmoro/inventory-api/app"
-	"github.com/triasmoro/inventory-api/endpoint"
+	"github.com/triasmoro/inventory-api/handler"
 )
 
 // publicRoutes to register all public endpoints
@@ -13,69 +13,69 @@ func publicRoutes(app *app.App) []*HandledRoute {
 	routes = append(routes,
 		post("/product").
 			securedWith(contentTypeJSON).
-			handle(endpoint.PostProduct(app)),
+			handle(handler.PostProduct(app)),
 
 		patch("/product/{id:[0-9]+}").
 			securedWith(contentTypeJSON).
-			handle(endpoint.PatchProduct(app)),
+			handle(handler.PatchProduct(app)),
 
 		delete("/product_variant/{id:[0-9]+}").
 			securedWith(unsecured()).
-			handle(endpoint.DeleteProductVariant(app)),
+			handle(handler.DeleteProductVariant(app)),
 
 		post("/purchase_order").
 			securedWith(contentTypeJSON).
-			handle(endpoint.PostPurchaseOrder(app)),
+			handle(handler.PostPurchaseOrder(app)),
 
 		delete("/purchase_order/{id:[0-9]+}").
 			securedWith(unsecured()).
-			handle(endpoint.DeletePurchaseOrder(app)),
+			handle(handler.DeletePurchaseOrder(app)),
 
 		post("/stock_in").
 			securedWith(contentTypeJSON).
-			handle(endpoint.PostStockIn(app)),
+			handle(handler.PostStockIn(app)),
 
 		delete("/stock_in/{id:[0-9]+}").
 			securedWith(contentTypeJSON).
-			handle(endpoint.DeleteStockIn(app)),
+			handle(handler.DeleteStockIn(app)),
 
 		post("/sales_order").
 			securedWith(contentTypeJSON).
-			handle(endpoint.PostSalesOrder(app)),
+			handle(handler.PostSalesOrder(app)),
 
 		delete("/sales_order/{id:[0-9]+}").
 			securedWith(unsecured()).
-			handle(endpoint.DeleteSalesOrder(app)),
+			handle(handler.DeleteSalesOrder(app)),
 
 		post("/stock_out").
 			securedWith(contentTypeJSON).
-			handle(endpoint.PostStockOut(app)),
+			handle(handler.PostStockOut(app)),
 
 		delete("/stock_out/{id:[0-9]+}").
 			securedWith(unsecured()).
-			handle(endpoint.DeleteStockOut(app)),
+			handle(handler.DeleteStockOut(app)),
 
 		// report
 		get("/actual_stock").
 			securedWith(unsecured()).
-			handle(endpoint.GetActualStock(app)),
+			handle(handler.GetActualStock(app)),
 
 		get("/assets_report").
 			securedWith(unsecured()).
-			handle(endpoint.GetAssetsReport(app)),
+			handle(handler.GetAssetsReport(app)),
 
 		get("/sales_report").
 			securedWith(unsecured()).
-			handle(endpoint.GetSalesReport(app)),
+			handle(handler.GetSalesReport(app)),
 
 		// csv export
 		get("/export/product").
 			securedWith(unsecured()).
-			handle(endpoint.GetExportProduct(app)),
+			handle(handler.GetExportProduct(app)),
 
 		get("/export/stock_in").
 			securedWith(unsecured()).
-			handle(endpoint.GetExportStockIn(app)),
+			handle(handler.GetExportStockIn(app)),
 	)
 
 	return routes
